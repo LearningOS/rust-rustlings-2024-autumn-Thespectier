@@ -53,6 +53,7 @@ impl State {
             Message::Move(p) => self.move_position(p),
             Message::Quit => self.quit(),
     }
+    }
 }
 
 #[cfg(test)]
@@ -79,3 +80,5 @@ mod tests {
         assert_eq!(state.message, "hello world");
     }
 }
+
+
