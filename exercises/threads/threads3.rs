@@ -3,7 +3,12 @@
 // Execute `rustlings hint threads3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// This exercise is about using multiple threads to send values over a channel.
+// We will create a `Queue` struct that contains two vectors, one for the first
+// half of the queue and one for the second half. We will then create two threads
+// that will send the values from the first and second halves of the queue over
+// a channel. Finally, we will receive the values from the channel and verify
+// that they are all received.
 
 use std::sync::mpsc;
 use std::sync::Arc;
@@ -30,11 +35,13 @@ fn send_tx(q: Queue, tx: mpsc::Sender<u32>) -> () {
     let qc = Arc::new(q);
     let qc1 = Arc::clone(&qc);
     let qc2 = Arc::clone(&qc);
+    let tx1 = tx.clone();
+    let tx2 = tx.clone();
 
     thread::spawn(move || {
         for val in &qc1.first_half {
             println!("sending {:?}", val);
-            tx.send(*val).unwrap();
+            tx1.send(*val).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
@@ -42,7 +49,7 @@ fn send_tx(q: Queue, tx: mpsc::Sender<u32>) -> () {
     thread::spawn(move || {
         for val in &qc2.second_half {
             println!("sending {:?}", val);
-            tx.send(*val).unwrap();
+            tx2.send(*val).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
